@@ -33,9 +33,7 @@ _counters = {
 _latency_samples: list = []
 
 
-# ------------------------------------------------------------------
-# GET /health
-# ------------------------------------------------------------------
+
 @router.get("/health", response_model=HealthResponse)
 async def health():
     db_ok = True
@@ -57,9 +55,7 @@ async def health():
     )
 
 
-# ------------------------------------------------------------------
-# POST /search
-# ------------------------------------------------------------------
+
 @router.post("/search", response_model=SearchResponse)
 async def search(req: SearchRequest, request: Request):
     request_id = str(uuid.uuid4())
@@ -119,9 +115,6 @@ async def search(req: SearchRequest, request: Request):
     )
 
 
-# ------------------------------------------------------------------
-# POST /feedback
-# ------------------------------------------------------------------
 @router.post("/feedback", response_model=FeedbackResponse)
 async def feedback(req: FeedbackRequest):
     _counters["feedback_total"] += 1
@@ -129,9 +122,7 @@ async def feedback(req: FeedbackRequest):
     return FeedbackResponse()
 
 
-# ------------------------------------------------------------------
-# GET /metrics  (Prometheus-style text)
-# ------------------------------------------------------------------
+
 @router.get("/metrics", response_class=PlainTextResponse)
 async def metrics():
     samples = _latency_samples
@@ -161,9 +152,7 @@ async def metrics():
     return "\n".join(lines)
 
 
-# ------------------------------------------------------------------
-# GET /stats  (dashboard KPI data)
-# ------------------------------------------------------------------
+
 @router.get("/stats")
 async def stats(hours: int = Query(24, ge=1, le=168)):
     data = get_query_stats(hours=hours)
@@ -173,9 +162,6 @@ async def stats(hours: int = Query(24, ge=1, le=168)):
     return data
 
 
-# ------------------------------------------------------------------
-# GET /logs  (debug page)
-# ------------------------------------------------------------------
 @router.get("/logs")
 async def logs(
     limit: int = Query(100, ge=1, le=500),
@@ -185,9 +171,7 @@ async def logs(
     return get_recent_logs(limit=limit, severity=severity, hours=hours)
 
 
-# ------------------------------------------------------------------
-# GET /experiments  (evaluation page)
-# ------------------------------------------------------------------
+
 @router.get("/experiments")
 async def experiments():
     csv_path = settings.metrics_dir / "experiments.csv"
@@ -201,9 +185,6 @@ async def experiments():
     return rows
 
 
-# ------------------------------------------------------------------
-# Helpers
-# ------------------------------------------------------------------
 def _percentile(samples: list, pct: float) -> float:
     if not samples:
         return 0.0
