@@ -1,7 +1,10 @@
 # Core API
+
+
 fastapi==0.111.0
-uvicorn[standard]==0.30.1
 pydantic==2.7.4
+pydantic-core==2.18.4  # prebuilt wheel exists for py3.11/3.12
+uvicorn[standard]==0.24.0
 
 # Search
 rank-bm25==0.2.2
